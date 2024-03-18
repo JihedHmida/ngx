@@ -9,9 +9,7 @@
     "@angular/core": "^17.3.0",
     "crypto-es": "^2.1.0"
   },
-  "devDependencies": {
-    "@types/crypto-js": "^4.2.2"
-  },
+  "devDependencies": {},
   "dependencies": {
     "tslib": "^2.3.0"
   },
