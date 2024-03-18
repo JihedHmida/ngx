@@ -7,7 +7,7 @@
   "peerDependencies": {
     "@angular/common": "^17.3.0",
     "@angular/core": "^17.3.0",
-    "crypto-js": "^4.2.0"
+    "crypto-es": "^2.1.0"
   },
   "devDependencies": {
     "@types/crypto-js": "^4.2.2"

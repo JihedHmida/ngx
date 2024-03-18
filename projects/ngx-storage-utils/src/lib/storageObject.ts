@@ -5,7 +5,6 @@ export interface StorageObject {
   expires?: Date;
 }
 export interface StorageSetOptions {
-  isExpirable?: boolean;
   maxAge?: number;
   expires?: Date;
   encryptionKey?: string;

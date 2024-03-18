@@ -1,6 +1,7 @@
 import { isPlatformBrowser } from '@angular/common';
 import { Injectable, PLATFORM_ID, inject } from '@angular/core';
-import * as CryptoJS from 'crypto-js';
+import { AES } from 'crypto-es/lib/aes';
+import { Utf8 } from 'crypto-es/lib/core';
 import { StorageObject, StorageSetOptions } from './storageObject';
 
 @Injectable({
@@ -70,8 +71,9 @@ export class StorageService implements Storage {
       if (encryptionKey !== '') {
         if (storageItem.isEncrypted) {
           storageItem.value = StorageService.decrypt(storageItem.value, encryptionKey);
+        } else {
+          console.warn(`Storage item : ${key} is not encrypted.`);
         }
-        console.warn(`Storage item : ${key} is not encrypted.`);
       }
       return storageItem;
     } catch (error) {
@@ -150,8 +152,6 @@ export class StorageService implements Storage {
       storageObject.isEncrypted = true;
     }
 
-    storageObject.isExpirable = options.isExpirable;
-
     if (options.maxAge) {
       storageObject.expires = new Date(new Date().getTime() + options.maxAge * 86_400_000);
       storageObject.isExpirable = true;
@@ -193,10 +193,10 @@ export class StorageService implements Storage {
   }
 
   private static encrypt(data: string, encryptionKey: string): string {
-    return CryptoJS.AES.encrypt(data, encryptionKey).toString();
+    return AES.encrypt(data, encryptionKey).toString();
   }
 
   private static decrypt(encryptedData: string, encryptionKey: string): string {
-    return CryptoJS.AES.decrypt(encryptedData, encryptionKey).toString(CryptoJS.enc.Utf8);
+    return AES.decrypt(encryptedData, encryptionKey).toString(Utf8);
   }
 }
