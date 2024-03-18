@@ -1,2 +1,10 @@
-
-<router-outlet />
+<div class="container-fluid h-100">
+  <div class="row h-100">
+    <div class="col-2 bg-light p-4">
+      <a [routerLink]="['/storage-utils']"><h6>Storage Utils</h6></a>
+    </div>
+    <div class="col-10 p-4">
+      <router-outlet />
+    </div>
+  </div>
+</div>
