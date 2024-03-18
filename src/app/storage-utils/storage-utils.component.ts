@@ -25,9 +25,6 @@ export class StorageUtilsComponent {
 
     this.storageService.setItem('encrypt', '123456789', {
       encryptionKey: 'ABC',
-      expires: new Date(),
-      isExpirable: false,
-      maxAge: 1500,
     });
 
     console.log(this.storageService.getItem('encrypt', 'ABC', false));
