@@ -1,15 +1,25 @@
 import { Injectable, inject } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { Subscription, filter, map, mergeMap } from 'rxjs';
 import { SeoUtilsConfig } from './config';
-import { SeoContent } from './seo-content';
-
+import { SeoContent, SeoDefaultContent } from './seo-content';
+const DEFAULT_CONTENT = new SeoDefaultContent('Seo Title', 'Seo Description', 'Seo', 'Seo.com', '');
 @Injectable({
   providedIn: 'root',
 })
 export class SeoUtilsService {
-  private readonly _ = inject(SeoUtilsConfig);
+  private readonly _ = inject(SeoUtilsConfig, { optional: true }) ?? DEFAULT_CONTENT;
   private readonly titleService = inject(Title);
   private readonly metaService = inject(Meta);
+  private readonly activatedRoute = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+
+  constructor() {
+    if (this._.listenToRouteEvents) {
+      this.listenToRouteEvents();
+    }
+  }
 
   /**
    * If invoked without any parameters, it defaults to the module's predefined SEO content.
@@ -17,9 +27,8 @@ export class SeoUtilsService {
    */
   setSEO(seoContent?: SeoContent): void {
     const content = seoContent ?? this._;
-
     this.removeAllMetaTags();
-    this.setTitle(content.title, content.siteName);
+    this.setTitle(content.title, content.siteName, content.titleDelimiter);
     this.setDescription(content.description);
     this.setUrl(content.appUrl);
     this.setSiteName(content.siteName);
@@ -27,12 +36,18 @@ export class SeoUtilsService {
     this.setType(content.type);
     this.setLocale();
     this.setTwitterCard(content.twitterCard);
+    this.setKeywords(content.keywords);
   }
 
-  private setTitle(title: string | undefined, siteName: string | undefined): void {
+  private setKeywords(metaKeywords: string | string[] = ''): void {
+    const keywordsContent: string = typeof metaKeywords === 'string' ? metaKeywords : metaKeywords.join(', ');
+    this.metaService.updateTag({ name: 'keywords', content: keywordsContent });
+  }
+
+  private setTitle(title: string | undefined, siteName: string | undefined, titleDelimiter: string = '|'): void {
     const _title = title ?? '';
     const _siteName = siteName ?? this._.siteName;
-    const titleContent = _title ? `${_title} | ${_siteName}` : _siteName;
+    const titleContent = _title ? `${_title} ${titleDelimiter} ${_siteName}` : _siteName;
     this.titleService.setTitle(titleContent);
     this.metaService.addTag({ property: 'og:title', content: titleContent });
     this.metaService.addTag({ property: 'twitter:title', content: titleContent });
@@ -98,5 +113,28 @@ export class SeoUtilsService {
     this.metaService.removeTag('name="twitter:title"');
     this.metaService.removeTag('name="twitter:description"');
     this.metaService.removeTag('name="twitter:image"');
+  }
+
+  private listenToRouteEvents(): Subscription {
+    return this.router.events
+      .pipe(
+        filter((event) => event instanceof NavigationEnd),
+        map(() => this.findPrimaryRoute(this.activatedRoute as ActivatedRoute)),
+        filter((route: ActivatedRoute) => route.outlet === 'primary'),
+        mergeMap((route: ActivatedRoute) => route.data)
+      )
+      .subscribe((data: any) => {
+        const seoData = data['seo'];
+        if (seoData) {
+          this.setSEO(seoData);
+        }
+      });
+  }
+
+  private findPrimaryRoute(route: ActivatedRoute): ActivatedRoute {
+    while (route.firstChild) {
+      route = route.firstChild;
+    }
+    return route;
   }
 }

@@ -1,8 +1,3 @@
-//TODO: add titleDelimiter: ' | ',
-//TODO: add keywords constructor
-//TODO: listen to router changes
-//? https://github.com/avivharuzi/ngx-seo/blob/main/packages/ngx-seo/src/lib/ngx-seo.service.ts
-
 export interface SeoContent {
   title: string;
   description: string;
@@ -19,16 +14,23 @@ export interface SeoContent {
 
   // Twitter Meta
   twitterCard?: TwitterCard;
+
+  //Optionals
+  titleDelimiter?: string;
+  keywords?: string | string[];
 }
 
 export class SeoDefaultContent {
   title: string;
   description: string;
   siteName: string;
-
   appUrl: string;
   image: string;
   type: WebsiteType;
+
+  listenToRouteEvents: boolean;
+  titleDelimiter: string;
+  keywords: string | string[];
 
   // Image Meta
   imageType: string;
@@ -48,7 +50,15 @@ export class SeoDefaultContent {
    * @param appUrl URL of the web application.
    * @param image URL of the image representing the web page.
    */
-  constructor(title: string, description: string, siteName: string, appUrl: string, image: string);
+  constructor(
+    title: string,
+    description: string,
+    siteName: string,
+    appUrl: string,
+    image: string,
+    listenToRouteEvents?: boolean,
+    titleDelimiter?: string
+  );
 
   /**
    * Full constructs a new SeoDefaultContent object.
@@ -58,7 +68,10 @@ export class SeoDefaultContent {
    * @param siteName Name of the website.
    * @param appUrl URL of the web application.
    * @param image URL of the image representing the web page.
-   * @param type Type of the page (default : 'website's).
+   * @param listenToRouteEvents Determines whether the service should listen to route changes and update SEO data accordingly.
+   * @param titleDelimiter The character used to separate different parts of the title in SEO metadata.
+   * @param keywords A list of keywords used to enhance SEO performance for the page.
+   * @param type Type of the page (default : 'website').
    * @param imageType Type of the image (default: 'image/jpeg').
    * @param imageWidth Width of the image (default : '400').
    * @param imageHeight Height of the image (default : '300').
@@ -71,6 +84,9 @@ export class SeoDefaultContent {
     siteName: string,
     appUrl: string,
     image: string,
+    listenToRouteEvents?: boolean,
+    titleDelimiter?: string,
+    keywords?: string | string[],
     type?: WebsiteType,
     imageType?: string,
     imageWidth?: string,
@@ -83,6 +99,9 @@ export class SeoDefaultContent {
     this.siteName = siteName;
     this.appUrl = appUrl;
     this.image = image;
+    this.listenToRouteEvents = listenToRouteEvents || false;
+    this.titleDelimiter = titleDelimiter || '|';
+    this.keywords = keywords || '';
     this.type = type || 'website';
     this.imageType = imageType || 'image/jpeg';
     this.imageWidth = imageWidth || '400';
