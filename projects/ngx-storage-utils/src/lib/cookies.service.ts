@@ -1,7 +1,8 @@
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { Inject, Injectable, Optional, PLATFORM_ID, inject } from '@angular/core';
 import { Request } from 'express';
-import { CookieOptions } from './cookieOptions';
+import { CookieObject, CookieOptions } from './cookieOptions';
+import { CryptoUtils } from './crypto.utils';
 
 @Injectable({
   providedIn: 'root',
@@ -20,24 +21,34 @@ export class CookiesService {
   }
 
   check(name: string): boolean {
-    name = encodeURIComponent(name);
-    const regExp: RegExp = CookiesService.getCookieRegExp(name);
+    const title = encodeURIComponent(name);
+    const regExp: RegExp = getCookieRegExp(title);
     const cookies = this.cookies;
     return regExp.test(cookies);
   }
 
-  get(name: string): string {
+  get(name: string, encryptionKey: string = ''): string {
     if (this.check(name)) {
       name = encodeURIComponent(name);
-
-      const regExp: RegExp = CookiesService.getCookieRegExp(name);
-
+      const regExp: RegExp = getCookieRegExp(name);
       const cookies = this.cookies;
-
       const result: RegExpExecArray | null = regExp.exec(cookies);
+      const cookieValueString = result && result[1] ? CookiesService.safeDecodeURIComponent(result[1]) : '';
 
-      return result && result[1] ? CookiesService.safeDecodeURIComponent(result[1]) : '';
+      try {
+        const cookieObject: CookieObject = JSON.parse(cookieValueString);
+        if (encryptionKey !== '') {
+          if (cookieObject.isEncrypted) {
+            return CryptoUtils.decrypt(cookieObject.value, encryptionKey);
+          }
+          console.warn(`Cookie item : ${name} is not encrypted.`);
+        }
+        return cookieObject.value;
+      } catch {
+        return '';
+      }
     } else {
+      console.warn(`Cookie item : ${name} does not exist.`);
       return '';
     }
   }
@@ -49,8 +60,9 @@ export class CookiesService {
     if (cookieString !== '') {
       cookieString.split(';').forEach((currentCookie) => {
         const [cookieName, cookieValue] = currentCookie.split('=');
-        cookies[CookiesService.safeDecodeURIComponent(cookieName.replace(/^ /, ''))] =
-          CookiesService.safeDecodeURIComponent(cookieValue);
+        cookies[CookiesService.safeDecodeURIComponent(cookieName.replace(/^ /, ''))] = JSON.parse(
+          CookiesService.safeDecodeURIComponent(cookieValue)
+        );
       });
     }
 
@@ -62,11 +74,22 @@ export class CookiesService {
       console.warn('Setting cookies is not available on the server side.');
       return;
     }
-    let cookieString: string = encodeURIComponent(name) + '=' + encodeURIComponent(value) + ';';
+
+    const cookieObject: CookieObject = {
+      value: encodeURIComponent(value),
+    };
+
+    let cookieString: string = encodeURIComponent(name) + '=' + encodeURIComponent(JSON.stringify(cookieObject)) + ';';
 
     if (!options) {
       this.document.cookie = cookieString;
       return;
+    }
+
+    if (options.encryptionKey && options.encryptionKey !== '') {
+      cookieObject.value = CryptoUtils.encrypt(value, options.encryptionKey);
+      cookieObject.isEncrypted = true;
+      cookieString = encodeURIComponent(name) + '=' + encodeURIComponent(JSON.stringify(cookieObject)) + ';';
     }
 
     if (options.maxAge) {
@@ -129,11 +152,6 @@ export class CookiesService {
     }
   }
 
-  private static getCookieRegExp(name: string): RegExp {
-    const escapedName: string = name.replace(/([\[\]\{\}\(\)\|\=\;\+\?\,\.\*\^\$])/gi, '\\$1');
-    return new RegExp('(?:^' + escapedName + '|;\\s*' + escapedName + ')=(.*?)(?:;|$)', 'g');
-  }
-
   private static safeDecodeURIComponent(encodedURIComponent: string): string {
     try {
       return decodeURIComponent(encodedURIComponent);
@@ -141,4 +159,9 @@ export class CookiesService {
       return encodedURIComponent;
     }
   }
+}
+
+function getCookieRegExp(name: string): RegExp {
+  const escapedName: string = name.replace(/([\[\]\{\}\(\)\|\=\;\+\?\,\.\*\^\$])/gi, '\\$1');
+  return new RegExp('(?:^' + escapedName + '|;\\s*' + escapedName + ')=(.*?)(?:;|$)', 'g');
 }

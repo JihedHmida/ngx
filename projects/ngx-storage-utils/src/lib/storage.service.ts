@@ -1,7 +1,6 @@
 import { isPlatformBrowser } from '@angular/common';
 import { Injectable, PLATFORM_ID, inject } from '@angular/core';
-import { AES } from 'crypto-es/lib/aes';
-import { Utf8 } from 'crypto-es/lib/core';
+import { CryptoUtils } from './crypto.utils';
 import { StorageObject, StorageSetOptions } from './storageObject';
 
 @Injectable({
@@ -70,7 +69,7 @@ export class StorageService implements Storage {
 
       if (encryptionKey !== '') {
         if (storageItem.isEncrypted) {
-          storageItem.value = StorageService.decrypt(storageItem.value, encryptionKey);
+          storageItem.value = CryptoUtils.decrypt(storageItem.value, encryptionKey);
         } else {
           console.warn(`Storage item : ${key} is not encrypted.`);
         }
@@ -105,7 +104,7 @@ export class StorageService implements Storage {
       }
       if (encryptionKey !== '') {
         if (storageItem.isEncrypted) {
-          return StorageService.decrypt(storageItem.value, encryptionKey);
+          return CryptoUtils.decrypt(storageItem.value, encryptionKey);
         }
         console.warn(`Storage item : ${key} is not encrypted.`);
       }
@@ -148,7 +147,7 @@ export class StorageService implements Storage {
     }
 
     if (options.encryptionKey && options.encryptionKey !== '') {
-      storageObject.value = StorageService.encrypt(value, options.encryptionKey);
+      storageObject.value = CryptoUtils.encrypt(value, options.encryptionKey);
       storageObject.isEncrypted = true;
     }
 
@@ -190,13 +189,5 @@ export class StorageService implements Storage {
         console.error(`Storage item: ${key} is not of StorageObject type`, error);
       }
     }
-  }
-
-  private static encrypt(data: string, encryptionKey: string): string {
-    return AES.encrypt(data, encryptionKey).toString();
-  }
-
-  private static decrypt(encryptedData: string, encryptionKey: string): string {
-    return AES.decrypt(encryptedData, encryptionKey).toString(Utf8);
   }
 }

@@ -9,4 +9,10 @@ export interface CookieOptions {
   sameSite?: 'Lax' | 'Strict' | 'None';
   partitioned?: boolean;
   priority?: 'low' | 'medium' | 'high';
+  encryptionKey?: string;
+}
+
+export interface CookieObject {
+  value: string;
+  isEncrypted?: boolean;
 }

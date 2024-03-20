@@ -23,10 +23,20 @@ export class StorageUtilsComponent {
       console.log('Server', this.storageService.getItem('Cookie'));
     }
 
-    this.storageService.setItem('encrypt', '123456789', {
-      encryptionKey: 'ABC',
-    });
+    // this.storageService.setItem('encrypt', 1234, {
+    //   encryptionKey: 'ABC',
+    // });
 
-    console.log(this.storageService.getItem('encrypt', 'ABC', false));
+    // this.cookiesService.set('test', '123456789', { encryptionKey: 'ABC' });
+    // this.cookiesService.set('testx', '123456789', { maxAge: 5 });
+
+    // console.log(this.cookiesService.get('test', 'ABCx'));
+    // console.log(this.cookiesService.get('testx', 'a'));
+    // console.log(this.cookiesService.getAll());
+
+    // console.log('cookies : ', this.cookiesService.get('testx'));
+
+    // this.storageService.setItem('aa', '1234');
+    // this.storageService.setItem('bb', JSON.stringify({ x: 'aa' }));
   }
 }

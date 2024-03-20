@@ -3,7 +3,7 @@
   "description": "Angular package for streamlined management of local storage and cookies in both SSR and CSR environments.",
   "license": "MIT",
   "author": "Jihed Hmida",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "peerDependencies": {
     "@angular/common": "^17.3.0",
     "@angular/core": "^17.3.0",
