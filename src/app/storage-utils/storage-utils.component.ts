@@ -1,4 +1,4 @@
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Component, PLATFORM_ID, inject } from '@angular/core';
 import { CookiesService, StorageService } from '../../../projects/ngx-storage-utils/src/public-api';
 
@@ -15,13 +15,13 @@ export class StorageUtilsComponent {
   storageService = inject(StorageService);
 
   constructor() {
-    if (isPlatformBrowser(this.platformId)) {
-      console.log('Browser', this.cookiesService.get('Cookie'));
-      console.log('Browser', this.storageService.getItem('Cookie'));
-    } else {
-      console.log('Server', this.cookiesService.get('Cookie'));
-      console.log('Server', this.storageService.getItem('Cookie'));
-    }
+    // if (isPlatformBrowser(this.platformId)) {
+    //   console.log('Browser', this.cookiesService.get('Cookie'));
+    //   console.log('Browser', this.storageService.getItem('Cookie'));
+    // } else {
+    //   console.log('Server', this.cookiesService.get('Cookie'));
+    //   console.log('Server', this.storageService.getItem('Cookie'));
+    // }
 
     // this.storageService.setItem('encrypt', 1234, {
     //   encryptionKey: 'ABC',
@@ -36,7 +36,16 @@ export class StorageUtilsComponent {
 
     // console.log('cookies : ', this.cookiesService.get('testx'));
 
-    // this.storageService.setItem('aa', '1234');
-    // this.storageService.setItem('bb', JSON.stringify({ x: 'aa' }));
+    this.storageService.setItem('aa', '1234');
+    this.storageService.setItem('bb', JSON.stringify({ x: 'aa' }));
+
+    this.cookiesService.set('test', '123456789');
+    this.cookiesService.set('testx', '123456789', { maxAge: 5 });
+
+    console.log(this.storageService.getItem('aa'));
+    console.log(this.storageService.getItem('bb'));
+
+    console.log(this.cookiesService.get('test'));
+    console.log(this.cookiesService.get('testx'));
   }
 }

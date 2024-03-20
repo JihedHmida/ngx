@@ -1,7 +1,10 @@
 import { isPlatformBrowser } from '@angular/common';
 import { Injectable, PLATFORM_ID, inject } from '@angular/core';
-import { CryptoUtils } from './crypto.utils';
-import { StorageObject, StorageSetOptions } from './storageObject';
+import { StorageUtilsConfig } from './config/config';
+import { StorageDefaultConfig } from './model/storage-config';
+import { StorageObject, StorageSetOptions } from './model/storageObject';
+import { CryptoUtils } from './utils/crypto.utils';
+const DEFAULT_CONFIG = new StorageDefaultConfig();
 
 @Injectable({
   providedIn: 'root',
@@ -9,6 +12,7 @@ import { StorageObject, StorageSetOptions } from './storageObject';
 export class StorageService implements Storage {
   private readonly isBrowser: boolean;
   private readonly platformId = inject(PLATFORM_ID);
+  private readonly _ = inject(StorageUtilsConfig, { optional: true }) ?? DEFAULT_CONFIG;
 
   constructor() {
     this.isBrowser = isPlatformBrowser(this.platformId);
@@ -32,6 +36,7 @@ export class StorageService implements Storage {
   }
 
   getTypedItem<T = unknown>(key: string, encryptionKey: string = '', validate: boolean = true): T | null {
+    encryptionKey = encryptionKey || this._.encryptionKey;
     const data = this.getItem(key, encryptionKey, validate);
     if (data) {
       try {
@@ -45,6 +50,7 @@ export class StorageService implements Storage {
   }
 
   getStorageItem(key: string, encryptionKey: string = '', validate: boolean = true): StorageObject | null {
+    encryptionKey = encryptionKey || this._.encryptionKey;
     if (!this.isBrowser) {
       console.warn('Storage is not available on the server side. Returning default value.');
       return null;
@@ -82,6 +88,7 @@ export class StorageService implements Storage {
   }
 
   getItem(key: string, encryptionKey: string = '', validate: boolean = true): string | null {
+    encryptionKey = encryptionKey || this._.encryptionKey;
     if (!this.isBrowser) {
       console.warn('Storage is not available on the server side. Returning default value.');
       return null;
@@ -141,24 +148,25 @@ export class StorageService implements Storage {
       value: value,
     };
 
-    if (!options) {
-      localStorage.setItem(key, JSON.stringify(storageObject));
-      return;
-    }
+    if (options) {
+      if (options.encryptionKey || this._.encryptionKey) {
+        const encryptionKey = options.encryptionKey ?? this._.encryptionKey;
+        storageObject.value = CryptoUtils.encrypt(value, encryptionKey);
+        storageObject.isEncrypted = true;
+      }
 
-    if (options.encryptionKey && options.encryptionKey !== '') {
-      storageObject.value = CryptoUtils.encrypt(value, options.encryptionKey);
+      if (options.maxAge) {
+        storageObject.expires = new Date(Date.now() + options.maxAge * 86400000);
+        storageObject.isExpirable = true;
+      }
+
+      if (options.expires) {
+        storageObject.expires = options.expires;
+        storageObject.isExpirable = true;
+      }
+    } else if (this._.encryptionKey) {
+      storageObject.value = CryptoUtils.encrypt(value, this._.encryptionKey);
       storageObject.isEncrypted = true;
-    }
-
-    if (options.maxAge) {
-      storageObject.expires = new Date(new Date().getTime() + options.maxAge * 86_400_000);
-      storageObject.isExpirable = true;
-    }
-
-    if (options.expires) {
-      storageObject.expires = options.expires;
-      storageObject.isExpirable = true;
     }
 
     localStorage.setItem(key, JSON.stringify(storageObject));

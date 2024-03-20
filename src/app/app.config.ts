@@ -20,5 +20,6 @@ export const appConfig: ApplicationConfig = {
     provideClientHydration(withHttpTransferCacheOptions({ includePostRequests: true })),
     provideHttpClient(withFetch()),
     importProvidersFrom(SeoUtilsModule.forRoot(defaultSeoContent)),
+    // importProvidersFrom(StorageUtilsModule.forRoot({ encryptionKey: 'ABC' })),
   ],
 };

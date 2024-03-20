@@ -1,8 +1,11 @@
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { Inject, Injectable, Optional, PLATFORM_ID, inject } from '@angular/core';
 import { Request } from 'express';
-import { CookieObject, CookieOptions } from './cookieOptions';
-import { CryptoUtils } from './crypto.utils';
+import { StorageUtilsConfig } from './config/config';
+import { CookieObject, CookieOptions } from './model/cookieOptions';
+import { StorageDefaultConfig } from './model/storage-config';
+import { CryptoUtils } from './utils/crypto.utils';
+const DEFAULT_CONFIG = new StorageDefaultConfig();
 
 @Injectable({
   providedIn: 'root',
@@ -11,6 +14,7 @@ export class CookiesService {
   private readonly isBrowser: boolean;
   private readonly platformId = inject(PLATFORM_ID);
   private document = inject(DOCUMENT);
+  private readonly _ = inject(StorageUtilsConfig, { optional: true }) ?? DEFAULT_CONFIG;
 
   constructor(@Optional() @Inject('REQUEST') private request: Request) {
     this.isBrowser = isPlatformBrowser(this.platformId);
@@ -28,6 +32,7 @@ export class CookiesService {
   }
 
   get(name: string, encryptionKey: string = ''): string {
+    encryptionKey = encryptionKey || this._.encryptionKey;
     if (this.check(name)) {
       name = encodeURIComponent(name);
       const regExp: RegExp = getCookieRegExp(name);
@@ -81,37 +86,39 @@ export class CookiesService {
 
     let cookieString: string = encodeURIComponent(name) + '=' + encodeURIComponent(JSON.stringify(cookieObject)) + ';';
 
-    if (!options) {
-      this.document.cookie = cookieString;
-      return;
-    }
+    if (options) {
+      if (options.encryptionKey || this._.encryptionKey) {
+        const encryptionKey = options.encryptionKey ?? this._.encryptionKey;
+        cookieObject.value = CryptoUtils.encrypt(value, encryptionKey);
+        cookieObject.isEncrypted = true;
+        cookieString = encodeURIComponent(name) + '=' + encodeURIComponent(JSON.stringify(cookieObject)) + ';';
+      }
 
-    if (options.encryptionKey && options.encryptionKey !== '') {
-      cookieObject.value = CryptoUtils.encrypt(value, options.encryptionKey);
+      if (options.maxAge) {
+        const expiresDate = new Date(new Date().getTime() + options.maxAge * 86_400_000);
+        cookieString += 'expires=' + expiresDate.toUTCString() + ';';
+      }
+
+      cookieString += options.expires ? 'expires=' + options.expires.toUTCString() + ';' : '';
+      cookieString += options.path ? 'path=' + options.path + ';' : '';
+      cookieString += options.domain ? 'domain=' + options.domain + ';' : '';
+
+      if (options.secure === false && options.sameSite === 'None') {
+        options.secure = true;
+        console.warn(` Cookie ${name} was forced with secure flag because sameSite=None.`);
+      }
+
+      cookieString += options.secure ? 'secure;' : '';
+      cookieString += 'sameSite=' + (options.sameSite || 'Lax') + ';';
+      cookieString += options.httpOnly ? 'HttpOnly;' : '';
+      cookieString += options.signed ? 'Signed;' : '';
+      cookieString += options.priority ? 'Priority=' + options.priority + ';' : '';
+      cookieString += options.partitioned ? 'Partitioned;' : '';
+    } else if (this._.encryptionKey) {
+      cookieObject.value = CryptoUtils.encrypt(value, this._.encryptionKey);
       cookieObject.isEncrypted = true;
       cookieString = encodeURIComponent(name) + '=' + encodeURIComponent(JSON.stringify(cookieObject)) + ';';
     }
-
-    if (options.maxAge) {
-      const expiresDate = new Date(new Date().getTime() + options.maxAge * 86_400_000);
-      cookieString += 'expires=' + expiresDate.toUTCString() + ';';
-    }
-
-    cookieString += options.expires ? 'expires=' + options.expires.toUTCString() + ';' : '';
-    cookieString += options.path ? 'path=' + options.path + ';' : '';
-    cookieString += options.domain ? 'domain=' + options.domain + ';' : '';
-
-    if (options.secure === false && options.sameSite === 'None') {
-      options.secure = true;
-      console.warn(` Cookie ${name} was forced with secure flag because sameSite=None.`);
-    }
-
-    cookieString += options.secure ? 'secure;' : '';
-    cookieString += 'sameSite=' + (options.sameSite || 'Lax') + ';';
-    cookieString += options.httpOnly ? 'HttpOnly;' : '';
-    cookieString += options.signed ? 'Signed;' : '';
-    cookieString += options.priority ? 'Priority=' + options.priority + ';' : '';
-    cookieString += options.partitioned ? 'Partitioned;' : '';
 
     this.document.cookie = cookieString;
   }
