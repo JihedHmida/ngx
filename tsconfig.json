@@ -11,6 +11,9 @@
     "noFallthroughCasesInSwitch": true,
     "skipLibCheck": true,
     "paths": {
+      "ngx-seo-utils": [
+        "./dist/ngx-seo-utils"
+      ],
       "ngx-storage-utils": [
         "./dist/ngx-storage-utils"
       ]
