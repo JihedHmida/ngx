@@ -1,8 +1,14 @@
 <div class="container-fluid h-100">
   <div class="row h-100">
-    <div class="col-2 bg-light p-4">
-      <a [routerLink]="['/storage-utils']"><h6>Storage Utils</h6></a>
-      <a [routerLink]="['/seo-utils']"><h6>Seo Utils</h6></a>
+    <div class="col-2 p-4">
+      <button class="btn btn-link w-100" [routerLink]="['/storage-utils']"><h6>Storage Utils</h6></button>
+      <button class="btn btn-link w-100" [routerLink]="['/seo-utils']"><h6>Seo Utils</h6></button>
+      <!-- Articles -->
+      <h6>Articles :</h6>
+      <button class="btn btn-link w-100" [routerLink]="['/', 'article-detail', 'fcip14pg']"><h6>FCIP14PG</h6></button>
+      <button class="btn btn-link w-100" [routerLink]="['/', 'article-detail', 'tss916n']"><h6>TSS916N</h6></button>
+      <button class="btn btn-link w-100" [routerLink]="['/', 'article-detail', 'al1054x']"><h6>AL1054X</h6></button>
+      <button class="btn btn-link w-100" [routerLink]="['/', 'article-detail', 'cm45wl']"><h6>CM45WL</h6></button>
     </div>
     <div class="col-10 p-4">
       <router-outlet />

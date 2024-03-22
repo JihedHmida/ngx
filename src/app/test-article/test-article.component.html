@@ -1,0 +1,17 @@
+
+@if(article){
+
+
+@if( article?.ARTICLE_IMAGE && article?.ARTICLE_IMAGE.length > 0){
+  <div style=" position: relative; height: 300px; width: 300px;">
+    <img [ngSrc]="article.ARTICLE_IMAGE[0].IMAGE_URL" [alt]="article.NOM"  fill style="object-fit: contain;" priority>
+  </div>
+}
+<h3>{{ article.NOM }}</h3>
+<h3>
+  <span>Référence : </span><span>{{ article.CODE }}</span>
+</h3>
+<h3>
+  <span>Price : </span><span>{{ article.PV_TTC }}</span>
+</h3>
+}

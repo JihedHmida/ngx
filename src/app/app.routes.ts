@@ -13,4 +13,8 @@ export const routes: Routes = [
     loadComponent: () => import('./seo-utils/seo-utils.component').then((c) => c.SeoUtilsComponent),
     data: { seo: seo },
   },
+  {
+    path: 'article-detail/:code',
+    loadComponent: () => import('./test-article/test-article.component').then((c) => c.TestArticleComponent),
+  },
 ];
