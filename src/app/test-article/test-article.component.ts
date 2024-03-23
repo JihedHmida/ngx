@@ -1,9 +1,10 @@
-import { CommonModule, NgOptimizedImage } from '@angular/common';
+import { CommonModule, NgOptimizedImage, isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, PLATFORM_ID, inject } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Observable } from 'rxjs';
 import { SeoUtilsService } from '../../../projects/ngx-seo-utils/src/public-api';
+import { CookiesService, StorageService } from '../../../projects/ngx-storage-utils/src/public-api';
 
 @Component({
   selector: 'app-test-article',
@@ -15,8 +16,12 @@ import { SeoUtilsService } from '../../../projects/ngx-seo-utils/src/public-api'
 export class TestArticleComponent implements OnInit {
   http = inject(HttpClient);
   seoService = inject(SeoUtilsService);
+  platformId = inject(PLATFORM_ID);
+  cookiesService = inject(CookiesService);
+  storageService = inject(StorageService);
 
   article: any;
+  image = '';
   activeRoute$: Observable<any>;
   constructor(private activatedRoute: ActivatedRoute) {
     this.activeRoute$ = this.activatedRoute.paramMap;
@@ -33,6 +38,13 @@ export class TestArticleComponent implements OnInit {
   }
 
   getArticle(code: string) {
+    if (isPlatformBrowser(this.platformId)) {
+      console.log('Browser', this.cookiesService.get('Cookie'));
+      console.log('Browser', this.storageService.getItem('Cookie'));
+    } else {
+      console.log('Server', this.cookiesService.get('Cookie'));
+      console.log('Server', this.storageService.getItem('Cookie'));
+    }
     const filter: Filter = {
       where: [{ isreferencingtable: false, table: 'ARTICLE', field: 'CODE', operateur: 'ILIKE', valeur: code }],
     };
@@ -41,21 +53,22 @@ export class TestArticleComponent implements OnInit {
       .subscribe((res: any) => {
         if (res.count === 1) {
           this.article = res.data[0];
-          let image = '';
           if (this.article.ARTICLE_IMAGE && this.article?.ARTICLE_IMAGE.length > 0) {
-            image = this.article.ARTICLE_IMAGE[0].IMAGE_URL;
+            this.image = getImageSize(this.article.ARTICLE_IMAGE[0].IMAGE_URL, 'medium');
           }
           this.seoService.setSEO({
             title: this.article.NOM,
             description: this.article.NOM,
-            image: image,
+            image: this.image,
             keywords: [...this.article.NOM.split(' '), this.article.CODE],
           });
         }
       });
   }
 }
-
+function getImageSize(imageUrl: string, size: 'small' | 'medium' | 'large'): string {
+  return imageUrl.replace('.jpg', `_${size}.jpg`);
+}
 export interface Filter {
   where: Where[];
 }
