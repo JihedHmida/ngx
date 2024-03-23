@@ -1,7 +1,6 @@
-import { CommonModule, NgOptimizedImage, isPlatformBrowser } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { Component, OnInit, PLATFORM_ID, inject } from '@angular/core';
-import { ActivatedRoute, ParamMap } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { SeoUtilsService } from '../../../projects/ngx-seo-utils/src/public-api';
 import { CookiesService, StorageService } from '../../../projects/ngx-storage-utils/src/public-api';
@@ -14,7 +13,6 @@ import { CookiesService, StorageService } from '../../../projects/ngx-storage-ut
   styleUrl: './test-article.component.scss',
 })
 export class TestArticleComponent implements OnInit {
-  http = inject(HttpClient);
   seoService = inject(SeoUtilsService);
   platformId = inject(PLATFORM_ID);
   cookiesService = inject(CookiesService);
@@ -22,48 +20,27 @@ export class TestArticleComponent implements OnInit {
 
   article: any;
   image = '';
-  activeRoute$: Observable<any>;
+  activeRouteData$: Observable<any>;
   constructor(private activatedRoute: ActivatedRoute) {
-    this.activeRoute$ = this.activatedRoute.paramMap;
+    this.activeRouteData$ = this.activatedRoute.data;
   }
   ngOnInit(): void {
-    this.activeRoute$.subscribe((params: ParamMap) => {
-      const id = params.get('code');
-      let code = id && id != '' ? id : 'error';
-      if (code != 'error') {
-        console.log(code);
-        this.getArticle(code);
-      }
+    this.activatedRoute.data.subscribe((response: any) => {
+      this.setArticle(response.article);
     });
   }
 
-  getArticle(code: string) {
-    if (isPlatformBrowser(this.platformId)) {
-      console.log('Browser', this.cookiesService.get('Cookie'));
-      console.log('Browser', this.storageService.getItem('Cookie'));
-    } else {
-      console.log('Server', this.cookiesService.get('Cookie'));
-      console.log('Server', this.storageService.getItem('Cookie'));
+  setArticle(data: any) {
+    this.article = data;
+    if (this.article.ARTICLE_IMAGE && this.article?.ARTICLE_IMAGE.length > 0) {
+      this.image = getImageSize(this.article.ARTICLE_IMAGE[0].IMAGE_URL, 'medium');
     }
-    const filter: Filter = {
-      where: [{ isreferencingtable: false, table: 'ARTICLE', field: 'CODE', operateur: 'ILIKE', valeur: code }],
-    };
-    this.http
-      .post('https://api.app-server.wellfone.fr/ecommerce/app/elementlist?table=ARTICLE&action=VIEW_LIST', filter)
-      .subscribe((res: any) => {
-        if (res.count === 1) {
-          this.article = res.data[0];
-          if (this.article.ARTICLE_IMAGE && this.article?.ARTICLE_IMAGE.length > 0) {
-            this.image = getImageSize(this.article.ARTICLE_IMAGE[0].IMAGE_URL, 'medium');
-          }
-          this.seoService.setSEO({
-            title: this.article.NOM,
-            description: this.article.NOM,
-            image: this.image,
-            keywords: [...this.article.NOM.split(' '), this.article.CODE],
-          });
-        }
-      });
+    this.seoService.setSEO({
+      title: this.article.NOM,
+      description: this.article.NOM,
+      image: this.image,
+      keywords: [...this.article.NOM.split(' '), this.article.CODE],
+    });
   }
 }
 function getImageSize(imageUrl: string, size: 'small' | 'medium' | 'large'): string {

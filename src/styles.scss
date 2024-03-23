@@ -1,4 +1,60 @@
 /* You can add global styles to this file, and also import other style files */
+:root {
+  --ngx-slight-scroll-thumb-bg: #9b9b9b;
+  --ngx-slight-scroll-bg: #fff;
+  --ngx-slight-scroll-thumb-radius: 0;
+  --ngx-slight-scroll-width: 10px;
+}
+.ngx-slight-scroll {
+  overflow: auto;
+  scroll-behavior: smooth;
+}
+.ngx-slight-scroll::-webkit-scrollbar {
+  width: var(--ngx-slight-scroll-width) !important;
+  background-color: var(--ngx-slight-scroll-bg) !important;
+  border-radius: var(--ngx-slight-scroll-thumb-radius);
+}
+.ngx-slight-scroll-border::-webkit-scrollbar {
+  border: 1px solid var(--ngx-slight-scroll-thumb-bg);
+}
+.ngx-slight-scroll::-webkit-scrollbar-thumb {
+  width: var(--ngx-slight-scroll-width) !important;
+  border-radius: var(--ngx-slight-scroll-thumb-radius);
+  background-color: var(--ngx-slight-scroll-thumb-bg) !important;
+}
+.ngx-slight-scroll::-webkit-scrollbar-thumb:horizontal {
+  width: var(--ngx-slight-scroll-width) !important;
+  border-radius: var(--ngx-slight-scroll-thumb-radius) !important;
+  background-color: var(--ngx-slight-scroll-thumb-bg) !important;
+}
+.ngx-slight-scroll-thumb-border::-webkit-scrollbar-thumb,
+.ngx-slight-scroll-thumb-border::-webkit-scrollbar-thumb:horizontal {
+  border: 1px solid var(--ngx-slight-scroll-bg);
+}
+.ngx-slight-scroll-pattern::-webkit-scrollbar-thumb,
+.ngx-slight-scroll-pattern::-webkit-scrollbar-thumb:horizontal {
+  background-color: #fff;
+  background: repeating-linear-gradient(
+    0,
+    var(--ngx-slight-scroll-thumb-bg),
+    var(--ngx-slight-scroll-thumb-bg) 5px,
+    #fff 5px,
+    #fff 10px
+  );
+}
+.ngx-slight-scroll-pattern-cross::-webkit-scrollbar-thumb,
+.ngx-slight-scroll-pattern-cross::-webkit-scrollbar-thumb:horizontal {
+  background-color: #e5e5f7;
+  opacity: 1;
+  background-image: linear-gradient(135deg, var(--ngx-slight-scroll-thumb-bg) 25%, transparent 25%),
+    linear-gradient(225deg, var(--ngx-slight-scroll-thumb-bg) 25%, transparent 25%),
+    linear-gradient(45deg, var(--ngx-slight-scroll-thumb-bg) 25%, transparent 25%),
+    linear-gradient(315deg, var(--ngx-slight-scroll-thumb-bg) 25%, #e5e5f7 25%);
+  background-position: 10px 0, 10px 0, 0 0, 0 0;
+  background-size: 10px 10px;
+  background-repeat: repeat;
+}
+
 html,
 body {
   height: 100%;

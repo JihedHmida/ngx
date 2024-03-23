@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { SeoContent } from './../../projects/ngx-seo-utils/src/lib/seo-content';
+import { ArticleResolver } from './article.resolver';
 const seo: SeoContent = { title: 'Seo Route ', description: 'Seo Route' };
 const storage: SeoContent = { title: 'Storage Route ', description: 'Storage Route' };
 export const routes: Routes = [
@@ -16,5 +17,7 @@ export const routes: Routes = [
   {
     path: 'article-detail/:code',
     loadComponent: () => import('./test-article/test-article.component').then((c) => c.TestArticleComponent),
+
+    resolve: { article: ArticleResolver },
   },
 ];
