@@ -1,0 +1,55 @@
+:root {
+  --ngx-scroll-thumb-bg: #9b9b9b;
+  --ngx-scroll-bg: #fff;
+  --ngx-scroll-thumb-radius: 0;
+  --ngx-scroll-width: 10px;
+}
+.ngx-scroll {
+  overflow: auto;
+  scroll-behavior: smooth;
+}
+.ngx-scroll::-webkit-scrollbar {
+  width: var(--ngx-scroll-width) !important;
+  background-color: var(--ngx-scroll-bg) !important;
+  border-radius: var(--ngx-scroll-thumb-radius);
+}
+.ngx-scroll-border::-webkit-scrollbar {
+  border: 1px solid var(--ngx-scroll-thumb-bg);
+}
+.ngx-scroll::-webkit-scrollbar-thumb {
+  width: var(--ngx-scroll-width) !important;
+  border-radius: var(--ngx-scroll-thumb-radius);
+  background-color: var(--ngx-scroll-thumb-bg) !important;
+}
+.ngx-scroll::-webkit-scrollbar-thumb:horizontal {
+  width: var(--ngx-scroll-width) !important;
+  border-radius: var(--ngx-scroll-thumb-radius) !important;
+  background-color: var(--ngx-scroll-thumb-bg) !important;
+}
+.ngx-scroll-thumb-border::-webkit-scrollbar-thumb,
+.ngx-scroll-thumb-border::-webkit-scrollbar-thumb:horizontal {
+  border: 1px solid var(--ngx-scroll-bg);
+}
+.ngx-scroll-pattern::-webkit-scrollbar-thumb,
+.ngx-scroll-pattern::-webkit-scrollbar-thumb:horizontal {
+  background-color: #fff;
+  background: repeating-linear-gradient(
+    0,
+    var(--ngx-scroll-thumb-bg),
+    var(--ngx-scroll-thumb-bg) 5px,
+    #fff 5px,
+    #fff 10px
+  );
+}
+.ngx-scroll-pattern-cross::-webkit-scrollbar-thumb,
+.ngx-scroll-pattern-cross::-webkit-scrollbar-thumb:horizontal {
+  background-color: #e5e5f7;
+  opacity: 1;
+  background-image: linear-gradient(135deg, var(--ngx-scroll-thumb-bg) 25%, transparent 25%),
+    linear-gradient(225deg, var(--ngx-scroll-thumb-bg) 25%, transparent 25%),
+    linear-gradient(45deg, var(--ngx-scroll-thumb-bg) 25%, transparent 25%),
+    linear-gradient(315deg, var(--ngx-scroll-thumb-bg) 25%, #e5e5f7 25%);
+  background-position: 10px 0, 10px 0, 0 0, 0 0;
+  background-size: 10px 10px;
+  background-repeat: repeat;
+}

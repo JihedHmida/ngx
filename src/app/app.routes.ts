@@ -3,6 +3,7 @@ import { SeoContent } from './../../projects/ngx-seo-utils/src/lib/seo-content';
 import { ArticleResolver } from './article.resolver';
 const seo: SeoContent = { title: 'Seo Route ', description: 'Seo Route' };
 const storage: SeoContent = { title: 'Storage Route ', description: 'Storage Route' };
+const scroller: SeoContent = { title: 'Scroller Directive ', description: 'Scroller Directive' };
 export const routes: Routes = [
   {
     path: 'storage-utils',
@@ -13,6 +14,11 @@ export const routes: Routes = [
     path: 'seo-utils',
     loadComponent: () => import('./seo-utils/seo-utils.component').then((c) => c.SeoUtilsComponent),
     data: { seo: seo },
+  },
+  {
+    path: 'scroller',
+    loadComponent: () => import('./ngx-scroller/ngx-scroller.component').then((c) => c.NgxScrollerComponent),
+    data: { seo: scroller },
   },
   {
     path: 'article-detail/:code',
