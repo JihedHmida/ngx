@@ -3,5 +3,6 @@
   "dest": "../../dist/ngx-storage-utils",
   "lib": {
     "entryFile": "src/public-api.ts"
-  }
+  },
+  "allowedNonPeerDependencies": ["crypto-es"]
 }
