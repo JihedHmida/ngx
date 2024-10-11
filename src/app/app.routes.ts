@@ -26,4 +26,5 @@ export const routes: Routes = [
 
     resolve: { article: ArticleResolver },
   },
+  { path: '**', redirectTo: 'storage-utils' },
 ];
