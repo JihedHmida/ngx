@@ -1,6 +1,6 @@
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { Inject, Injectable, Optional, PLATFORM_ID, inject } from '@angular/core';
-import { Request } from 'express';
+import { REQUEST } from '@angular/ssr';
 import { StorageUtilsConfig } from './config/config';
 import { CookieObject, CookieOptions } from './model/cookieOptions';
 import { StorageDefaultConfig } from './model/storage-config';
@@ -16,12 +16,12 @@ export class CookiesService {
   private document = inject(DOCUMENT);
   private readonly _ = inject(StorageUtilsConfig, { optional: true }) ?? DEFAULT_CONFIG;
 
-  constructor(@Optional() @Inject('REQUEST') private request: Request) {
+  constructor(@Optional() @Inject(REQUEST) private request: Request) {
     this.isBrowser = isPlatformBrowser(this.platformId);
   }
 
   private get cookies(): string {
-    return this.isBrowser ? this.document.cookie ?? '' : this.request?.headers.cookie ?? '';
+    return this.isBrowser ? this.document.cookie ?? '' : this.request?.headers.get('cookie') ?? '';
   }
 
   check(name: string): boolean {
