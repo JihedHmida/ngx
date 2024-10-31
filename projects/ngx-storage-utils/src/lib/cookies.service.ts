@@ -1,6 +1,6 @@
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { Inject, Injectable, Optional, PLATFORM_ID, inject } from '@angular/core';
-import { REQUEST } from '@angular/ssr';
+import { REQUEST } from '@angular/ssr/tokens';
 import { StorageUtilsConfig } from './config/config';
 import { CookieObject, CookieOptions } from './model/cookieOptions';
 import { StorageDefaultConfig } from './model/storage-config';
