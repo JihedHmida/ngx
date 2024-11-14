@@ -9,7 +9,7 @@
     "test": "ng test",
     "serve:ssr:ngx": "node dist/ngx/server/server.mjs",
     "build:ngx-storage-utils": "ng build ngx-storage-utils --configuration production",
-    "publish:ngx-storage-utils": "cd dist/ngx-storage-utils && npm publish",
+    "publish:ngx-storage-utils": "cd dist/ngx-storage-utils && npm publish --tag next",
     "build:ngx-seo-utils": "ng build ngx-seo-utils --configuration production",
     "publish:ngx-seo-utils": "cd dist/ngx-seo-utils && npm publish"
   },
