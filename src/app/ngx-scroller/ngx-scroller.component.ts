@@ -1,10 +1,10 @@
-import { CommonModule } from '@angular/common';
+
 import { Component } from '@angular/core';
 import { NgxScroll } from '../ngx-scroll.directive';
 
 @Component({
     selector: 'app-ngx-scroller',
-    imports: [CommonModule, NgxScroll],
+    imports: [NgxScroll],
     templateUrl: './ngx-scroller.component.html',
     styles: ``
 })

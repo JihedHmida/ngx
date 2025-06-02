@@ -1,5 +1,5 @@
-import { DOCUMENT, isPlatformBrowser } from '@angular/common';
-import { Directive, ElementRef, EventEmitter, Input, Output, PLATFORM_ID, Renderer2, inject } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { Directive, ElementRef, EventEmitter, Input, Output, PLATFORM_ID, Renderer2, inject, DOCUMENT } from '@angular/core';
 
 @Directive({
   selector: '[ngxScroll]',

@@ -1,4 +1,4 @@
-import { CommonModule, NgOptimizedImage } from '@angular/common';
+import { NgOptimizedImage } from '@angular/common';
 import { Component, OnInit, PLATFORM_ID, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -7,7 +7,7 @@ import { CookiesService, StorageService } from '../../../projects/ngx-storage-ut
 
 @Component({
     selector: 'app-test-article',
-    imports: [CommonModule, NgOptimizedImage],
+    imports: [NgOptimizedImage],
     templateUrl: './test-article.component.html',
     styleUrl: './test-article.component.scss'
 })

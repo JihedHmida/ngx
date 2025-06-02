@@ -1,10 +1,10 @@
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 import { Component, PLATFORM_ID, inject } from '@angular/core';
 import { CookiesService, StorageService } from '../../../projects/ngx-storage-utils/src/public-api';
 
 @Component({
     selector: 'app-storage-utils',
-    imports: [CommonModule],
+    imports: [],
     templateUrl: './storage-utils.component.html',
     styles: ``
 })

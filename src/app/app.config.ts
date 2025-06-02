@@ -1,9 +1,14 @@
-import { ApplicationConfig, importProvidersFrom, provideZoneChangeDetection } from '@angular/core';
+import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZonelessChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
 
 import { provideHttpClient, withFetch } from '@angular/common/http';
-import { provideClientHydration, withEventReplay, withHttpTransferCacheOptions } from '@angular/platform-browser';
-import { SeoDefaultContent, SeoUtilsModule } from '../../projects/ngx-seo-utils/src/public-api';
+import {
+  provideClientHydration,
+  withEventReplay,
+  withHttpTransferCacheOptions,
+  withIncrementalHydration,
+} from '@angular/platform-browser';
+import { SeoDefaultContent } from '../../projects/ngx-seo-utils/src/public-api';
 import { routes } from './app.routes';
 
 const defaultSeoContent = new SeoDefaultContent(
@@ -16,11 +21,14 @@ const defaultSeoContent = new SeoDefaultContent(
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideZoneChangeDetection({ eventCoalescing: true }),
+    provideBrowserGlobalErrorListeners(),
+    provideZonelessChangeDetection(),
     provideRouter(routes),
-    provideClientHydration(withHttpTransferCacheOptions({ includePostRequests: true }), withEventReplay()),
+    provideClientHydration(
+      withHttpTransferCacheOptions({ includePostRequests: true }),
+      withEventReplay(),
+      withIncrementalHydration()
+    ),
     provideHttpClient(withFetch()),
-    importProvidersFrom(SeoUtilsModule.forRoot(defaultSeoContent)),
-    // importProvidersFrom(StorageUtilsModule.forRoot({ encryptionKey: 'ABC' })),
   ],
 };
