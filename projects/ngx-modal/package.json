@@ -1,0 +1,28 @@
+{
+  "name": "ngx-modal",
+  "description": "Lightweight and dependency-free Angular modal package using standalone components. Supports stacking, backdrops, dynamic injection, and custom content components.",
+  "version": "0.0.1",
+  "author": "Jihed Hmida",
+  "license": "MIT",
+  "peerDependencies": {
+    "@angular/common": ">= 19.0.0-0",
+    "@angular/core": ">= 19.0.0-0"
+  },
+  "dependencies": {
+    "tslib": "^2.3.0"
+  },
+  "sideEffects": false,
+  "keywords": [
+    "angular",
+    "modal",
+    "dialog",
+    "popup",
+    "ngx",
+    "overlay",
+    "angular modal",
+    "standalone",
+    "lightweight",
+    "dynamic components",
+    "angular cdky-free"
+  ]
+}

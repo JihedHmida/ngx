@@ -1,5 +1,8 @@
 {
   "name": "ngx-seo-utils",
+  "description": "Angular package for unified and dynamic SEO management, including title and meta tag updates, with support for both SSR and CSR environments.",
+  "license": "MIT",
+  "author": "Jihed Hmida",
   "version": "1.0.5",
   "peerDependencies": {
     "@angular/common": ">= 19.0.0-0",
@@ -8,5 +11,17 @@
   "dependencies": {
     "tslib": "^2.3.0"
   },
-  "sideEffects": false
+  "sideEffects": false,
+  "keywords": [
+    "angular",
+    "seo",
+    "meta tags",
+    "title",
+    "ssr",
+    "csr",
+    "ngx",
+    "open graph",
+    "seo utils",
+    "angular universal"
+  ]
 }

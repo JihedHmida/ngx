@@ -11,7 +11,9 @@
     "build:ngx-storage-utils": "ng build ngx-storage-utils --configuration production",
     "publish:ngx-storage-utils": "cd dist/ngx-storage-utils && npm publish",
     "build:ngx-seo-utils": "ng build ngx-seo-utils --configuration production",
-    "publish:ngx-seo-utils": "cd dist/ngx-seo-utils && npm publish"
+    "publish:ngx-seo-utils": "cd dist/ngx-seo-utils && npm publish",
+    "build:ngx-modal": "ng build ngx-modal --configuration production",
+    "publish:ngx-modal": "cd dist/ngx-modal && npm publish"
   },
   "private": true,
   "dependencies": {

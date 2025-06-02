@@ -12,6 +12,9 @@
     "noFallthroughCasesInSwitch": true,
     "skipLibCheck": true,
     "paths": {
+      "ngx-modal": [
+        "./dist/ngx-modal"
+      ],
       "ngx-seo-utils": ["./dist/ngx-seo-utils"],
       "ngx-storage-utils": ["./dist/ngx-storage-utils"]
     },
@@ -30,5 +33,13 @@
     "strictInjectionParameters": true,
     "strictInputAccessModifiers": true,
     "strictTemplates": true
-  }
+  },
+  "references": [
+    {
+      "path": "./projects/ngx-modal/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/ngx-modal/tsconfig.spec.json"
+    }
+  ]
 }
