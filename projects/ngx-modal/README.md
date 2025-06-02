@@ -1,9 +1,9 @@
-# Ngx Modal
+# Ngx Light Modal
 
-[![npm version](https://badge.fury.io/js/ngx-modal.svg)](https://badge.fury.io/js/ngx-modal)
+[![npm version](https://badge.fury.io/js/ngx-light-modal.svg)](https://badge.fury.io/js/ngx-light-modal)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
-**NgxModal** is a lightweight, dependency-free Angular modal package built with standalone components and fully dynamic rendering. It supports modal stacking, backdrop control, custom content components, and complete lifecycle observables — without requiring a host component in your templates.
+**NgxLightModal** is a lightweight, dependency-free Angular modal package built with standalone components and fully dynamic rendering. It supports modal stacking, backdrop control, custom content components, and complete lifecycle observables — without requiring a host component in your templates.
 
 ---
 
@@ -23,7 +23,7 @@
 Install the package via npm:
 
 ```bash
-npm install ngx-modal
+npm install ngx-light-modal
 ```
 
 ---
@@ -70,7 +70,7 @@ enum CloseState {
 
 ```ts
 import { Component, inject } from '@angular/core';
-import { ModalService } from 'ngx-modal';
+import { ModalService } from 'ngx-light-modal';
 import { ExampleModalComponent } from './modal/example-modal/example-modal.component';
 
 @Component({
@@ -131,8 +131,8 @@ export class AppComponent {
 
 ```ts
 import { Component } from '@angular/core';
-import { ModalService } from 'ngx-modal';
-import { CloseState } from 'ngx-modal';
+import { ModalService } from 'ngx-light-modal';
+import { CloseState } from 'ngx-light-modal';
 
 @Component({
   selector: 'app-example-modal',
