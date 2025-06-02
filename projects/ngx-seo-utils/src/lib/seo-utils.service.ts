@@ -9,15 +9,27 @@ const DEFAULT_CONTENT = new SeoDefaultContent('Seo Title', 'Seo Description', 'S
   providedIn: 'root',
 })
 export class SeoUtilsService {
-  private readonly _ = inject(SeoUtilsConfig, { optional: true }) ?? DEFAULT_CONTENT;
+  private _: SeoDefaultContent = inject(SeoUtilsConfig, { optional: true }) ?? DEFAULT_CONTENT;
+  private routeSub?: Subscription;
+
   private readonly titleService = inject(Title);
   private readonly metaService = inject(Meta);
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly router = inject(Router);
 
-  constructor() {
+  setGlobalSeo(content: SeoDefaultContent) {
+    this._ = content;
     if (this._.listenToRouteEvents) {
-      this.listenToRouteEvents();
+      if (this.routeSub) {
+        this.routeSub.unsubscribe();
+      }
+      this.routeSub = this.listenToRouteEvents();
+    }
+  }
+
+  constructor() {
+    if (this._.listenToRouteEvents && !this.routeSub) {
+      this.routeSub = this.listenToRouteEvents();
     }
   }
 
@@ -49,23 +61,23 @@ export class SeoUtilsService {
     const _siteName = siteName ?? this._.siteName;
     const titleContent = _title ? `${_title} ${titleDelimiter} ${_siteName}` : _siteName;
     this.titleService.setTitle(titleContent);
-    this.metaService.addTag({ property: 'og:title', content: titleContent });
-    this.metaService.addTag({ property: 'twitter:title', content: titleContent });
+    this.metaService.updateTag({ property: 'og:title', content: titleContent });
+    this.metaService.updateTag({ property: 'twitter:title', content: titleContent });
   }
 
   private setDescription(description: string | undefined = undefined): void {
-    this.metaService.addTag({ name: 'description', content: description ?? this._.description });
-    this.metaService.addTag({ property: 'og:description', content: description ?? this._.description });
-    this.metaService.addTag({ property: 'twitter:description', content: description ?? this._.description });
+    this.metaService.updateTag({ name: 'description', content: description ?? this._.description });
+    this.metaService.updateTag({ property: 'og:description', content: description ?? this._.description });
+    this.metaService.updateTag({ property: 'twitter:description', content: description ?? this._.description });
   }
 
   private setUrl(url: string | undefined = undefined): void {
-    this.metaService.addTag({ property: 'og:url', content: url ?? this._.appUrl });
-    this.metaService.addTag({ property: 'twitter:url', content: url ?? this._.appUrl });
+    this.metaService.updateTag({ property: 'og:url', content: url ?? this._.appUrl });
+    this.metaService.updateTag({ property: 'twitter:url', content: url ?? this._.appUrl });
   }
 
   private setSiteName(siteName: string | undefined = undefined): void {
-    this.metaService.addTag({ property: 'og:site_name', content: siteName ?? this._.siteName });
+    this.metaService.updateTag({ property: 'og:site_name', content: siteName ?? this._.siteName });
   }
 
   private setImage(
@@ -74,23 +86,23 @@ export class SeoUtilsService {
     imageHeight: string | undefined = undefined,
     imageType: string | undefined = undefined
   ): void {
-    this.metaService.addTag({ property: 'og:image', content: image ?? this._.image });
-    this.metaService.addTag({ property: 'twitter:image', content: image ?? this._.image });
-    this.metaService.addTag({ property: 'og:image:width', content: imageWidth ?? this._.imageWidth });
-    this.metaService.addTag({ property: 'og:image:height', content: imageHeight ?? this._.imageHeight });
-    this.metaService.addTag({ property: 'og:image:type', content: imageType ?? this._.imageType });
+    this.metaService.updateTag({ property: 'og:image', content: image ?? this._.image });
+    this.metaService.updateTag({ property: 'twitter:image', content: image ?? this._.image });
+    this.metaService.updateTag({ property: 'og:image:width', content: imageWidth ?? this._.imageWidth });
+    this.metaService.updateTag({ property: 'og:image:height', content: imageHeight ?? this._.imageHeight });
+    this.metaService.updateTag({ property: 'og:image:type', content: imageType ?? this._.imageType });
   }
 
   private setType(type: string | undefined = undefined): void {
-    this.metaService.addTag({ property: 'og:type', content: type ?? this._.type });
+    this.metaService.updateTag({ property: 'og:type', content: type ?? this._.type });
   }
 
   private setLocale(local: string | undefined = undefined): void {
-    this.metaService.addTag({ property: 'og:locale', content: local ?? this._.locale });
+    this.metaService.updateTag({ property: 'og:locale', content: local ?? this._.locale });
   }
 
   private setTwitterCard(type: string | undefined = undefined): void {
-    this.metaService.addTag({ name: 'twitter:card', content: type ?? this._.twitterCard });
+    this.metaService.updateTag({ name: 'twitter:card', content: type ?? this._.twitterCard });
   }
 
   private removeAllMetaTags(): void {
@@ -118,16 +130,13 @@ export class SeoUtilsService {
   private listenToRouteEvents(): Subscription {
     return this.router.events
       .pipe(
-        filter((event) => event instanceof NavigationEnd),
-        map(() => this.findPrimaryRoute(this.activatedRoute as ActivatedRoute)),
+        filter((e): e is NavigationEnd => e instanceof NavigationEnd),
+        map(() => this.findPrimaryRoute(this.activatedRoute)),
         filter((route: ActivatedRoute) => route.outlet === 'primary'),
         mergeMap((route: ActivatedRoute) => route.data)
       )
-      .subscribe((data: any) => {
-        const seoData = data['seo'];
-        if (seoData) {
-          this.setSEO(seoData);
-        }
+      .subscribe((data: { seo?: SeoContent }) => {
+        if (data.seo) this.setSEO(data.seo);
       });
   }
 
