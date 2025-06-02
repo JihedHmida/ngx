@@ -21,6 +21,11 @@ export const routes: Routes = [
     data: { seo: scroller },
   },
   {
+    path: 'modal',
+    loadComponent: () => import('./ngx-modal/ngx-modal.component').then((c) => c.NgxModalComponent),
+    data: { seo: scroller },
+  },
+  {
     path: 'article-detail/:code',
     loadComponent: () => import('./test-article/test-article.component').then((c) => c.TestArticleComponent),
 

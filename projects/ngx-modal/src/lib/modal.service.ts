@@ -1,7 +1,7 @@
 import { ApplicationRef, ComponentRef, createComponent, EnvironmentInjector, Injectable, Injector, Type } from '@angular/core';
 import { filter, Observable, Subject } from 'rxjs';
 import { CloseResult, CloseState } from './close-state';
-import { ModalConfig } from './modal-container/modal-config';
+import { ModalConfig } from './modal-config';
 import { ModalContainerComponent } from './modal-container/modal-container.component';
 import { ModalRef } from './modal-ref';
 

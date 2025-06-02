@@ -6,66 +6,8 @@ import { ModalService } from '../modal.service';
 
 @Component({
   selector: 'app-modal-container',
-  template: `
-    <div
-      #modal
-      [ngClass]="{ 'backdrop-active': showBackdrop }"
-      [class]="'modal-backdrop ' + backdropClass"
-      (click)="onBackdropClick($event)"
-      tabindex="-1"
-      [style.zIndex]="zIndex"
-    >
-      <div class="modal-content" [ngClass]="modalClass" [style.zIndex]="zIndex + 1">
-        @if (showCloseButton) {
-        <button class="close-button" (click)="closeWithButton()">&times;</button>
-        }
-
-        <ng-container #modalContent></ng-container>
-      </div>
-    </div>
-  `,
-  styles: [
-    `
-      .modal-backdrop {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 1000;
-
-        &.backdrop-active {
-          background-color: rgba(0, 0, 0, 0.5);
-        }
-      }
-      .modal-backdrop:focus {
-        outline: none;
-      }
-      .modal-content {
-        background: white;
-        padding: 20px;
-        border-radius: 4px;
-        position: relative;
-        max-width: 90vw;
-        max-height: 90vh;
-        overflow: auto;
-      }
-
-      .close-button {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        background: none;
-        border: none;
-        font-size: 1.2rem;
-        cursor: pointer;
-        z-index: 100;
-      }
-    `,
-  ],
+  templateUrl: './modal-container.component.html',
+  styleUrl: './modal-container.component.scss',
   imports: [NgClass],
   standalone: true,
 })
