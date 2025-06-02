@@ -25,7 +25,10 @@ export const ArticleResolver: ResolveFn<any> = (route, state) => {
     where: [{ isreferencingtable: false, table: 'ARTICLE', field: 'CODE', operateur: 'ILIKE', valeur: code }],
   };
   return http
-    .post('https://api.app-server.wellfone.fr/ecommerce/app/elementlist?table=ARTICLE&action=VIEW_LIST', filter)
+    .post(
+      'https://api.app-server.benamorinternational.com/ecommerce/app/elementlist?table=ARTICLE&action=VIEW_LIST',
+      filter
+    )
     .pipe(
       catchError((error) => {
         console.error('Error fetching article:', error);

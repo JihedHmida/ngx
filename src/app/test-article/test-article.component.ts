@@ -6,11 +6,10 @@ import { SeoUtilsService } from '../../../projects/ngx-seo-utils/src/public-api'
 import { CookiesService, StorageService } from '../../../projects/ngx-storage-utils/src/public-api';
 
 @Component({
-  selector: 'app-test-article',
-  standalone: true,
-  imports: [CommonModule, NgOptimizedImage],
-  templateUrl: './test-article.component.html',
-  styleUrl: './test-article.component.scss',
+    selector: 'app-test-article',
+    imports: [CommonModule, NgOptimizedImage],
+    templateUrl: './test-article.component.html',
+    styleUrl: './test-article.component.scss'
 })
 export class TestArticleComponent implements OnInit {
   seoService = inject(SeoUtilsService);

@@ -20,7 +20,7 @@ export class StorageService implements Storage {
 
   get length(): number {
     if (!this.isBrowser) {
-      console.warn('Storage is not available on the server side. Returning default value.');
+      if (this._.verbose) console.warn('Storage is not available on the server side. Returning default value.');
       return 0;
     }
 
@@ -29,7 +29,7 @@ export class StorageService implements Storage {
 
   clear(): void {
     if (!this.isBrowser) {
-      console.warn('Storage is not available on the server side. Data cannot be cleared.');
+      if (this._.verbose) console.warn('Storage is not available on the server side. Data cannot be cleared.');
     } else {
       localStorage.clear();
     }
@@ -42,7 +42,7 @@ export class StorageService implements Storage {
       try {
         return JSON.parse(data) as T;
       } catch (error) {
-        console.error(`Error parsing or validating storage item: ${key}`, error);
+        if (this._.verbose) console.error(`Error parsing or validating storage item: ${key}`, error);
         return null;
       }
     }
@@ -52,7 +52,7 @@ export class StorageService implements Storage {
   getStorageItem(key: string, encryptionKey: string = '', validate: boolean = true): StorageObject | null {
     encryptionKey = encryptionKey || this._.encryptionKey;
     if (!this.isBrowser) {
-      console.warn('Storage is not available on the server side. Returning default value.');
+      if (this._.verbose) console.warn('Storage is not available on the server side. Returning default value.');
       return null;
     }
 
@@ -67,7 +67,7 @@ export class StorageService implements Storage {
           const expirationDate = new Date(storageItem.expires);
           if (expirationDate <= new Date()) {
             this.removeItem(key);
-            console.info(`Expired item removed: ${key}`);
+            if (this._.verbose) console.info(`Expired item removed: ${key}`);
             return null;
           }
         }
@@ -77,7 +77,7 @@ export class StorageService implements Storage {
         if (storageItem.isEncrypted) {
           storageItem.value = CryptoUtils.decrypt(storageItem.value, encryptionKey);
         } else {
-          console.warn(`Storage item : ${key} is not encrypted.`);
+          if (this._.verbose) console.warn(`Storage item : ${key} is not encrypted.`);
         }
       }
       return storageItem;
@@ -90,7 +90,7 @@ export class StorageService implements Storage {
   getItem(key: string, encryptionKey: string = '', validate: boolean = true): string | null {
     encryptionKey = encryptionKey || this._.encryptionKey;
     if (!this.isBrowser) {
-      console.warn('Storage is not available on the server side. Returning default value.');
+      if (this._.verbose) console.warn('Storage is not available on the server side. Returning default value.');
       return null;
     }
 
@@ -104,7 +104,7 @@ export class StorageService implements Storage {
         if (storageItem.isExpirable && storageItem.expires) {
           const expirationDate = new Date(storageItem.expires);
           if (expirationDate <= new Date()) {
-            console.warn(`Expired item : ${key}`);
+            if (this._.verbose) console.warn(`Expired item : ${key}`);
             return null;
           }
         }
@@ -113,7 +113,7 @@ export class StorageService implements Storage {
         if (storageItem.isEncrypted) {
           return CryptoUtils.decrypt(storageItem.value, encryptionKey);
         }
-        console.warn(`Storage item : ${key} is not encrypted.`);
+        if (this._.verbose) console.warn(`Storage item : ${key} is not encrypted.`);
       }
       return storageItem.value;
     } catch {
@@ -123,7 +123,7 @@ export class StorageService implements Storage {
 
   key(index: number): string | null {
     if (!this.isBrowser) {
-      console.warn('Storage is not available on the server side. Returning default value.');
+      if (this._.verbose) console.warn('Storage is not available on the server side. Returning default value.');
       return null;
     } else {
       return localStorage.key(index);
@@ -132,7 +132,7 @@ export class StorageService implements Storage {
 
   removeItem(key: string): void {
     if (!this.isBrowser) {
-      console.warn('Storage is not available on the server side. Data cannot be removed.');
+      if (this._.verbose) console.warn('Storage is not available on the server side. Data cannot be removed.');
     } else {
       localStorage.removeItem(key);
     }
@@ -140,7 +140,7 @@ export class StorageService implements Storage {
 
   setItem(key: string, value: string, options?: StorageSetOptions): void {
     if (!this.isBrowser) {
-      console.warn('Storage is not available on the server side. Data will not be stored.');
+      if (this._.verbose) console.warn('Storage is not available on the server side. Data will not be stored.');
       return;
     }
 
@@ -174,7 +174,7 @@ export class StorageService implements Storage {
 
   validate(): void {
     if (!this.isBrowser) {
-      console.warn('Storage is not available on the server side. Data will not be validated.');
+      if (this._.verbose) console.warn('Storage is not available on the server side. Data will not be validated.');
       return;
     }
 
@@ -190,7 +190,7 @@ export class StorageService implements Storage {
           const expirationDate = new Date(storageItem.expires);
           if (expirationDate <= new Date()) {
             this.removeItem(key);
-            console.info(`Expired item removed: ${key}`);
+            if (this._.verbose) console.info(`Expired item removed: ${key}`);
           }
         }
       } catch (error) {

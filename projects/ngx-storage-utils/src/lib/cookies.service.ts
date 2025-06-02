@@ -1,6 +1,5 @@
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
-import { Inject, Injectable, Optional, PLATFORM_ID, inject } from '@angular/core';
-import { Request } from 'express';
+import { Inject, inject, Injectable, Optional, PLATFORM_ID, REQUEST } from '@angular/core';
 import { StorageUtilsConfig } from './config/config';
 import { CookieObject, CookieOptions } from './model/cookieOptions';
 import { StorageDefaultConfig } from './model/storage-config';
@@ -16,12 +15,12 @@ export class CookiesService {
   private document = inject(DOCUMENT);
   private readonly _ = inject(StorageUtilsConfig, { optional: true }) ?? DEFAULT_CONFIG;
 
-  constructor(@Optional() @Inject('REQUEST') private request: Request) {
+  constructor(@Optional() @Inject(REQUEST) private request: Request) {
     this.isBrowser = isPlatformBrowser(this.platformId);
   }
 
   private get cookies(): string {
-    return this.isBrowser ? this.document.cookie ?? '' : this.request?.headers.cookie ?? '';
+    return this.isBrowser ? this.document.cookie ?? '' : this.request?.headers.get('cookie') ?? '';
   }
 
   check(name: string): boolean {
@@ -46,14 +45,14 @@ export class CookiesService {
           if (cookieObject.isEncrypted) {
             return CryptoUtils.decrypt(cookieObject.value, encryptionKey);
           }
-          console.warn(`Cookie item : ${name} is not encrypted.`);
+          if (this._.verbose) console.warn(`Cookie item : ${name} is not encrypted.`);
         }
         return cookieObject.value;
       } catch {
         return '';
       }
     } else {
-      console.warn(`Cookie item : ${name} does not exist.`);
+      if (this._.verbose) console.warn(`Cookie item : ${name} does not exist.`);
       return '';
     }
   }
@@ -76,7 +75,7 @@ export class CookiesService {
 
   set(name: string, value: string, options?: CookieOptions): void {
     if (!this.isBrowser) {
-      console.warn('Setting cookies is not available on the server side.');
+      if (this._.verbose) console.warn('Setting cookies is not available on the server side.');
       return;
     }
 
@@ -105,7 +104,7 @@ export class CookiesService {
 
       if (options.secure === false && options.sameSite === 'None') {
         options.secure = true;
-        console.warn(` Cookie ${name} was forced with secure flag because sameSite=None.`);
+        if (this._.verbose) console.warn(` Cookie ${name} was forced with secure flag because sameSite=None.`);
       }
 
       cookieString += options.secure ? 'secure;' : '';
@@ -131,7 +130,7 @@ export class CookiesService {
     sameSite: 'Lax' | 'Strict' | 'None' = 'Lax'
   ): void {
     if (!this.isBrowser) {
-      console.warn('Deleting cookies is not available on the server side.');
+      if (this._.verbose) console.warn('Deleting cookies is not available on the server side.');
       return;
     }
     const expiresDate = new Date(0);
@@ -146,7 +145,7 @@ export class CookiesService {
 
   deleteAll(path?: string, domain?: string, secure?: boolean, sameSite: 'Lax' | 'None' | 'Strict' = 'Lax'): void {
     if (!this.isBrowser) {
-      console.warn('Deleting cookies is not available on the server side.');
+      if (this._.verbose) console.warn('Deleting cookies is not available on the server side.');
       return;
     }
 

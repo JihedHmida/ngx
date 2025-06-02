@@ -3,11 +3,10 @@ import { Component, PLATFORM_ID, inject } from '@angular/core';
 import { CookiesService, StorageService } from '../../../projects/ngx-storage-utils/src/public-api';
 
 @Component({
-  selector: 'app-storage-utils',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './storage-utils.component.html',
-  styles: ``,
+    selector: 'app-storage-utils',
+    imports: [CommonModule],
+    templateUrl: './storage-utils.component.html',
+    styles: ``
 })
 export class StorageUtilsComponent {
   platformId = inject(PLATFORM_ID);
