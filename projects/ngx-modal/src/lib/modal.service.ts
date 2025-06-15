@@ -1,4 +1,13 @@
-import { ApplicationRef, ComponentRef, createComponent, EnvironmentInjector, Injectable, Injector, Type } from '@angular/core';
+import {
+  ApplicationRef,
+  ComponentRef,
+  createComponent,
+  EnvironmentInjector,
+  Injectable,
+  Injector,
+  inputBinding,
+  Type,
+} from '@angular/core';
 import { filter, Observable, Subject } from 'rxjs';
 import { CloseResult, CloseState } from './close-state';
 import { ModalConfig } from './modal-config';
@@ -16,16 +25,26 @@ export class ModalService {
   constructor(private injector: Injector, private appRef: ApplicationRef, private environmentInjector: EnvironmentInjector) {}
 
   open<T>(component: Type<T>, data?: Partial<T>, config: ModalConfig = {}): ModalRef<T> {
-    // Create modal container
+    const zIndex = 1000 + (this.modalStack.length + 1) * 100;
+
+    const bindings = [
+      inputBinding('showBackdrop', () => config.showBackdrop ?? true),
+      inputBinding('dismissOnBackdropClick', () => config.dismissOnBackdropClick ?? true),
+      inputBinding('showCloseButton', () => config.showCloseButton ?? true),
+      inputBinding('escapeKeyClose', () => config.escapeKeyClose ?? true),
+      inputBinding('modalClass', () => config.modalClass || ''),
+      inputBinding('backdropClass', () => config.backdropClass || ''),
+      inputBinding('zIndex', () => zIndex),
+    ];
+
     const modalContainerRef = createComponent(ModalContainerComponent, {
       environmentInjector: this.environmentInjector,
       elementInjector: this.injector,
+      bindings,
     });
 
-    // Create content component
     const contentRef = modalContainerRef.instance.createComponent(component);
 
-    // Inject data through provider instead of direct assignment
     if (contentRef.instance && data) {
       Object.assign(contentRef.instance, data);
     }
@@ -35,33 +54,20 @@ export class ModalService {
     this.contentComponentRegistry.set(contentRef.instance, modalRef);
 
     // Configure modal container
-    const zIndex = 1000 + this.modalStack.length * 100;
     Object.assign(modalContainerRef.instance, {
       modalRef: modalRef,
-      zIndex,
-      showBackdrop: config.showBackdrop ?? true,
-      dismissOnBackdropClick: config.dismissOnBackdropClick ?? true,
-      showCloseButton: config.showCloseButton ?? true,
-      escapeKeyClose: config.escapeKeyClose ?? true,
-      modalClass: config.modalClass || '',
-      backdropClass: config.backdropClass || '',
     });
 
-    // Attach to DOM
     document.body.appendChild(modalContainerRef.location.nativeElement);
     this.appRef.attachView(modalContainerRef.hostView);
 
-    // Single change detection after setup
-    modalContainerRef.changeDetectorRef.detectChanges();
     modalContainerRef.instance.focus();
 
-    // Setup cleanup
     modalRef.afterClosed$.subscribe((result) => {
       this.cleanupModal(modalRef.id);
       this.closeSource.next(result);
     });
 
-    // Microtask for after opened notification
     Promise.resolve().then(() => modalRef.notifyAfterOpened());
 
     return modalRef;
@@ -92,8 +98,7 @@ export class ModalService {
     modal.containerRef.destroy();
 
     // Update z-index and top status for remaining modals
-    this.modalStack.forEach((m, i) => {
-      m.containerRef.instance.zIndex = 1000 + i * 100;
+    this.modalStack.forEach((m) => {
       m.containerRef.changeDetectorRef.detectChanges();
     });
 
@@ -109,6 +114,8 @@ export class ModalService {
   }
   isTopModal(modalRef: ModalRef): boolean {
     const top = this.getTopModal();
+    console.log(modalRef);
+
     return top?.id === modalRef.id;
   }
 

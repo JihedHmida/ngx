@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { CloseState, ModalRef, ModalService } from 'ngx-modal';
 import { ExampleModalComponent } from './example-modal.component';
 
@@ -11,7 +11,7 @@ import { ExampleModalComponent } from './example-modal.component';
     <label for="name">Name:</label>
     <input type="text" id="name" />
     <p>Received Data: {{ data | json }}</p>
-    <p>Received Data 2 : {{ data2 | json }}</p>
+    <p>Received Data 2 : {{ data2() | json }}</p>
 
     <button type="button" (click)="submit()">Submit</button> <button type="button" (click)="openModal()">Open Modal</button>
   `,
@@ -24,8 +24,8 @@ import { ExampleModalComponent } from './example-modal.component';
     `,
 })
 export class FormComponent {
-  @Input() data: any;
-  @Input() data2: any;
+  data: { title: string; userId: number } | undefined = undefined;
+  data2 = signal<{ title: string; userId: number } | undefined>(undefined);
   constructor(private modalService: ModalService) {}
   get modalRef(): ModalRef | undefined {
     return this.modalService.getModalRef(this);
@@ -41,7 +41,7 @@ export class FormComponent {
     const modalRef = this.modalService.open(
       ExampleModalComponent,
       {
-        message: 'Hello from parent!',
+        message: signal('Hello from parent!'),
       },
       {
         showBackdrop: true,

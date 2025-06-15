@@ -1,14 +1,13 @@
 // example-modal/example-modal.component.ts
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { CloseState, ModalService } from 'ngx-modal';
 import { FormComponent } from './form.component';
 
 @Component({
   selector: 'app-example-modal',
-
   template: `
     <h2>Custom Modal</h2>
-    <p>Data received: {{ message }}</p>
+    <p>Data received: {{ message() }}</p>
     <button (click)="close()">Close</button>
     <button (click)="openFormModal()">openFormModal</button>
   `,
@@ -16,8 +15,7 @@ import { FormComponent } from './form.component';
 export class ExampleModalComponent {
   // modalRef!: ModalRef;
 
-  message: any;
-
+  message = signal<string>('');
   close() {
     this.modalService.getModalRef(this)?.close(null, CloseState.CANCELLED);
   }
@@ -29,7 +27,7 @@ export class ExampleModalComponent {
       FormComponent,
       {
         data: { title: 'User Form', userId: 123 },
-        data2: { title: 'User Form', userId: 123 },
+        data2: signal({ title: 'User Form', userId: 123 }),
       },
       {
         showBackdrop: true,

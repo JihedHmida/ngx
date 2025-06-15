@@ -139,12 +139,17 @@ import { CloseState } from 'ngx-light-modal';
   template: `
     <h2>Custom Modal</h2>
     <p>Data received: {{ message }}</p>
+    <p>Data received Signal: {{ messageSignal() }}</p>
     <button (click)="close()">Close</button>
     <button (click)="openForm()">Open Form Modal</button>
   `,
 })
 export class ExampleModalComponent {
+  /**
+   * Supports both plain data and Angular signals and it's type-safe
+   */
   message: any;
+  messageSignal = signal<string>('');
 
   constructor(private modalService: ModalService) {}
 

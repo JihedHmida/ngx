@@ -1,7 +1,7 @@
 {
   "name": "ngx-light-modal",
   "description": "Lightweight and dependency-free Angular modal package using standalone components. Supports stacking, backdrops, dynamic injection, and custom content components.",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "author": "Jihed Hmida",
   "license": "MIT",
   "peerDependencies": {

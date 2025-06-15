@@ -1,5 +1,5 @@
 import { NgClass } from '@angular/common';
-import { Component, ComponentRef, ElementRef, HostListener, inject, Input, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, ComponentRef, ElementRef, HostListener, inject, input, Type, ViewChild, ViewContainerRef } from '@angular/core';
 import { CloseState } from '../close-state';
 import { ModalRef } from '../modal-ref';
 import { ModalService } from '../modal.service';
@@ -12,21 +12,20 @@ import { ModalService } from '../modal.service';
   standalone: true,
 })
 export class ModalContainerComponent {
-  @ViewChild('modalContent', { read: ViewContainerRef, static: true })
-  public modalContent!: ViewContainerRef;
-
+  @ViewChild('modalContent', { read: ViewContainerRef, static: true }) modalContent!: ViewContainerRef;
   @ViewChild('modal', { static: true }) modal!: ElementRef;
+
   modalRef!: ModalRef;
   contentComponent!: ComponentRef<any>;
   modalService = inject(ModalService);
 
-  @Input() showBackdrop = true;
-  @Input() dismissOnBackdropClick = true;
-  @Input() showCloseButton = true;
-  @Input() escapeKeyClose = true;
-  @Input() modalClass = '';
-  @Input() backdropClass = '';
-  @Input() zIndex = 1000;
+  showBackdrop = input.required<boolean>();
+  dismissOnBackdropClick = input.required<boolean>();
+  showCloseButton = input.required<boolean>();
+  escapeKeyClose = input.required<boolean>();
+  modalClass = input.required<string>();
+  backdropClass = input.required<string>();
+  zIndex = input.required<number>();
 
   focus(): void {
     this.modal.nativeElement.focus();
@@ -34,18 +33,18 @@ export class ModalContainerComponent {
 
   @HostListener('document:keydown.escape', ['$event'])
   handleEscape(event: KeyboardEvent) {
-    if (this.escapeKeyClose && this.modalService.isTopModal(this.modalRef)) {
+    if (this.escapeKeyClose() && this.modalService.isTopModal(this.modalRef)) {
       this.close(CloseState.ESCAPE);
     }
   }
 
-  createComponent(component: any): ComponentRef<any> {
+  createComponent<T>(component: Type<T>): ComponentRef<any> {
     this.modalContent.clear();
     return this.modalContent.createComponent(component);
   }
 
   onBackdropClick(event: MouseEvent) {
-    if (this.dismissOnBackdropClick && event.target === this.modal.nativeElement) {
+    if (this.dismissOnBackdropClick() && event.target === this.modal.nativeElement) {
       this.close(CloseState.BACKDROP_DISMISS);
     }
   }

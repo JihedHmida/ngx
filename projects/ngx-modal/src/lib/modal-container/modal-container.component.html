@@ -1,13 +1,13 @@
     <div
       #modal
-      [ngClass]="{ 'ngx-backdrop-active': showBackdrop }"
-      [class]="'ngx-modal-backdrop ' + backdropClass"
+      [ngClass]="{ 'ngx-backdrop-active': showBackdrop() }"
+      [class]="'ngx-modal-backdrop ' + backdropClass()"
       (click)="onBackdropClick($event)"
       tabindex="-1"
-      [style.zIndex]="zIndex"
+      [style.zIndex]="zIndex()"
     >
-      <div class="ngx-modal-content" [ngClass]="modalClass" [style.zIndex]="zIndex + 1">
-        @if (showCloseButton) {
+      <div class="ngx-modal-content" [ngClass]="modalClass()" [style.zIndex]="zIndex() + 1">
+        @if (showCloseButton()) {
         <button class="ngx-close-button" (click)="closeWithButton()">&times;</button>
         }
 

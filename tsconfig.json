@@ -12,7 +12,7 @@
     "noFallthroughCasesInSwitch": true,
     "skipLibCheck": true,
     "paths": {
-      "ngx-modal": ["./dist/ngx-modal"],
+      "ngx-modal": ["./projects/ngx-modal/src/public-api.ts"],
       "ngx-seo-utils": ["./dist/ngx-seo-utils"],
       "ngx-storage-utils": ["./dist/ngx-storage-utils"]
     },

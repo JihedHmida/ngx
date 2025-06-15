@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { ModalService } from 'ngx-modal';
 import { ExampleModalComponent } from './example-modal.component';
 import { FormComponent } from './form.component';
@@ -23,7 +23,7 @@ export class NgxModalComponent {
     const modalRef = this.modalService.open(
       ExampleModalComponent,
       {
-        message: 'Hello from parent!',
+        message: signal('Hello from parent!'),
       },
       {
         showBackdrop: true,
@@ -63,7 +63,7 @@ export class NgxModalComponent {
       FormComponent,
       {
         data: { title: 'User Form', userId: 123 },
-        data2: { title: 'User Form', userId: 123 },
+        data2: signal({ title: 'User Form', userId: 123 }),
       },
       {
         showBackdrop: true,
