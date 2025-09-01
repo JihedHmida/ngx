@@ -3,7 +3,7 @@
   "description": "Angular package for loading runtime configuration, managing app settings, and injecting services with post-initialization callbacks, compatible with standalone Angular 19+ applications.",
   "license": "MIT",
   "author": "Jihed Hmida",
-  "version": "1.0.0",
+  "version": "1.0.5",
   "peerDependencies": {
     "@angular/common": ">= 19.0.0-0",
     "@angular/core": ">= 19.0.0-0"
@@ -11,6 +11,7 @@
   "dependencies": {
     "tslib": "^2.3.0"
   },
+  "types": "dist/ngx-runtime-initializer/public-api.d.ts",
   "sideEffects": false,
   "keywords": [
     "angular",

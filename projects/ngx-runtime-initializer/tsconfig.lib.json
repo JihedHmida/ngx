@@ -10,7 +10,7 @@
     "composite": true,
     "types": []
   },
-  "files": ["src/globals.d.ts"],
+  "files": [],
   "include": ["src/**/*.ts"],
   "exclude": ["**/*.spec.ts"]
 }
