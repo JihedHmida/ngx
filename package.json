@@ -13,7 +13,9 @@
     "build:ngx-seo-utils": "ng build ngx-seo-utils --configuration production",
     "publish:ngx-seo-utils": "cd dist/ngx-seo-utils && npm publish",
     "build:ngx-modal": "ng build ngx-modal --configuration production",
-    "publish:ngx-modal": "cd dist/ngx-modal && npm publish"
+    "publish:ngx-modal": "cd dist/ngx-modal && npm publish",
+    "build:ngx-runtime-initializer": "ng build ngx-runtime-initializer --configuration production",
+    "publish:ngx-runtime-initializer": "cd dist/ngx-runtime-initializer && npm publish"
   },
   "private": true,
   "dependencies": {

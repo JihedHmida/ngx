@@ -13,6 +13,7 @@
     "skipLibCheck": true,
     "paths": {
       "ngx-modal": ["./projects/ngx-modal/src/public-api.ts"],
+      "ngx-runtime-initializer": ["./projects/ngx-runtime-initializer/src/public-api.ts"],
       "ngx-seo-utils": ["./dist/ngx-seo-utils"],
       "ngx-storage-utils": ["./dist/ngx-storage-utils"]
     },
@@ -31,5 +32,13 @@
     "strictInjectionParameters": true,
     "strictInputAccessModifiers": true,
     "strictTemplates": true
-  }
+  },
+  "references": [
+    {
+      "path": "./projects/ngx-runtime-initializer/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/ngx-runtime-initializer/tsconfig.spec.json"
+    }
+  ]
 }
